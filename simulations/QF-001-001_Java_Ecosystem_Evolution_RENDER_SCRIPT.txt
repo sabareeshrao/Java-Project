@@ -1,0 +1,299 @@
+const simulationPackage = {
+  "meta": {
+    "familyId": "QF-001-001",
+    "studySeq": 2,
+    "masterSeq": 2,
+    "title": "Keeping Up with the Continuous Evolution of the Java Ecosystem",
+    "project": "Aerial Mapping Workflow Management Platform",
+    "year": 2020,
+    "role": "Java Developer",
+    "primaryLanguage": "Java 8",
+    "domain": "GIS / Aerial Mapping / Topographic Services",
+    "format": "30-60 second intern study",
+    "totalSteps": 10
+  },
+  "apps": {
+    "outlook": {
+      "account": "java.developer@ats.local",
+      "displayName": "Java Developer",
+      "initialFolder": "Inbox",
+      "initialMail": "platform-2020-17",
+      "folders": ["Inbox", "Sent Items", "Drafts", "Archive"],
+      "messages": [{
+        "id": "platform-2020-17",
+        "folder": "Inbox",
+        "from": "platform.team@ats.local",
+        "to": "java.developer@ats.local",
+        "subject": "Approved Spring Boot patch review - aerial workflow service",
+        "body": "Team,\n\nThe next approved Spring Boot patch is available for services that remain on the Java 8 baseline. Please review dependency impact, run regression tests, and validate the QA APIs before adoption. Do not upgrade transitive libraries individually unless compatibility is understood.\n\nPlatform Team",
+        "time": "09:10",
+        "read": false,
+        "attachments": []
+      }]
+    },
+    "jira": {
+      "siteName": "Aerial Topographic Services",
+      "project": {"key": "MAP", "name": "Aerial Mapping Workflow Management Platform"},
+      "user": "Java Developer",
+      "boardName": "Aerial Workflow",
+      "activeView": "board",
+      "columns": [
+        {"id": "todo", "name": "TO DO"},
+        {"id": "progress", "name": "IN PROGRESS"},
+        {"id": "review", "name": "CODE REVIEW"},
+        {"id": "done", "name": "DONE"}
+      ],
+      "issues": [{
+        "key": "MAP-2317",
+        "type": "Task",
+        "summary": "Review approved Spring Boot patch for aerial workflow service",
+        "description": "Evaluate the approved Spring Boot patch against the Java 8 service, check Maven dependency impact, run regression tests, deploy to QA, and verify survey workflow APIs.",
+        "status": "progress",
+        "assignee": "Java Developer",
+        "reporter": "Platform Team",
+        "priority": "Medium",
+        "labels": ["maintenance", "spring-boot", "java-ecosystem"],
+        "comments": [],
+        "attachments": []
+      }]
+    },
+    "intellij_idea": {
+      "project": {"name": "Aerial Mapping Workflow Management Platform", "sdk": "Java 8 (1.8)", "languageLevel": "8"},
+      "files": {
+        "pom.xml": {
+          "language": "xml",
+          "content": "<project>\n  <modelVersion>4.0.0</modelVersion>\n  <parent>\n    <groupId>org.springframework.boot</groupId>\n    <artifactId>spring-boot-starter-parent</artifactId>\n    <version>2.2.8.RELEASE</version>\n  </parent>\n  <dependencies>\n    <dependency>spring-boot-starter-web</dependency>\n    <dependency>spring-boot-starter-data-jpa</dependency>\n    <dependency>postgresql</dependency>\n    <dependency>junit</dependency>\n  </dependencies>\n</project>\n"
+        },
+        "src/test/java/com/ats/mapping/SurveyWorkflowRegressionTest.java": {
+          "language": "java",
+          "content": "package com.ats.mapping;\n\nimport org.junit.Test;\n\npublic class SurveyWorkflowRegressionTest {\n    @Test\n    public void completedJobRemainsReadableAfterFrameworkPatch() {\n        // regression coverage for the aerial workflow API\n    }\n}\n"
+        }
+      },
+      "tree": [{
+        "name": "aerial-workflow",
+        "path": "aerial-workflow",
+        "type": "folder",
+        "open": true,
+        "children": [
+          {"name": "pom.xml", "path": "pom.xml", "type": "file", "language": "xml"},
+          {"name": "SurveyWorkflowRegressionTest.java", "path": "src/test/java/com/ats/mapping/SurveyWorkflowRegressionTest.java", "type": "file", "language": "java"}
+        ]
+      }],
+      "initialFile": "pom.xml",
+      "console": "Aerial Mapping Workflow project loaded with Java 8.",
+      "maven": {
+        "project": "aerial-workflow",
+        "profile": "qa",
+        "status": "Ready",
+        "dependencies": [
+          {"artifactId": "spring-boot-starter-web"},
+          {"artifactId": "spring-boot-starter-data-jpa"},
+          {"artifactId": "postgresql"},
+          {"artifactId": "junit"}
+        ]
+      },
+      "spring": {
+        "beans": ["jobController", "jobService", "jobRepository"],
+        "mappings": ["GET /api/jobs/{id}", "PUT /api/jobs/{id}/status"]
+      },
+      "git": {"branch": "maintenance/MAP-2317-spring-patch", "changes": []},
+      "terminal": "C:\\ATS\\aerial-workflow>"
+    },
+    "bitbucket": {
+      "workspaceName": "Aerial Topographic Services",
+      "user": "Java Developer",
+      "repo": {
+        "name": "aerial-workflow",
+        "slug": "aerial-workflow",
+        "description": "Java Spring Boot backend for aerial mapping workflow operations",
+        "defaultBranch": "develop"
+      },
+      "branch": "develop",
+      "branches": [
+        {"name": "develop", "lastCommit": "QA baseline", "author": "Team"},
+        {"name": "maintenance/MAP-2317-spring-patch", "lastCommit": "Spring patch candidate", "author": "Java Developer"}
+      ],
+      "files": {},
+      "tree": [],
+      "commits": [],
+      "pullRequests": [],
+      "pipelines": [],
+      "activeView": "pullrequests"
+    },
+    "jenkins": {
+      "title": "ATS Jenkins",
+      "user": "Java Developer",
+      "activeView": "dashboard",
+      "activeJob": "aerial-workflow",
+      "activeBuild": 291,
+      "jobs": [{
+        "name": "aerial-workflow",
+        "description": "Build, test and deploy the aerial mapping Spring Boot service.",
+        "status": "success",
+        "lastSuccess": "#291",
+        "lastFailure": "#284",
+        "duration": "3m 12s",
+        "pipeline": [
+          {"name": "Checkout", "status": "success"},
+          {"name": "Maven Test", "status": "success"},
+          {"name": "Package", "status": "success"},
+          {"name": "Deploy QA", "status": "success"}
+        ],
+        "builds": [{
+          "number": 291,
+          "status": "success",
+          "time": "Today",
+          "duration": "3m 12s",
+          "progress": 100,
+          "cause": "maintenance/MAP-2317-spring-patch",
+          "console": "",
+          "stages": [
+            {"name": "Checkout", "status": "success"},
+            {"name": "Maven Test", "status": "success"},
+            {"name": "Package", "status": "success"},
+            {"name": "Deploy QA", "status": "success"}
+          ],
+          "artifacts": [{"name": "aerial-workflow.jar", "size": "39 MB"}],
+          "testResults": {"total": 112, "passed": 112, "failed": 0, "tests": []}
+        }],
+        "config": {}
+      }]
+    },
+    "postman": {
+      "workspaceName": "Aerial Mapping API",
+      "activeEnvironment": "QA",
+      "environments": {"QA": {"baseUrl": "https://qa-mapping.ats.local"}},
+      "collections": [{
+        "name": "Aerial Jobs",
+        "requests": [{
+          "id": "jobRead",
+          "name": "Get Processing Job",
+          "method": "GET",
+          "url": "{{baseUrl}}/api/jobs/782",
+          "headers": {"Accept": "application/json"},
+          "bodyMode": "raw",
+          "body": "",
+          "tests": ""
+        }],
+        "folders": []
+      }],
+      "initialRequest": "jobRead",
+      "history": [],
+      "console": [{"text": "Postman Console ready"}]
+    }
+  },
+  "workflow": [
+    {
+      "app": "outlook",
+      "action": "openMail",
+      "label": "01 Update signal reaches the team",
+      "text": "Softwares involved: Outlook, Jira, IntelliJ IDEA, Maven/JUnit, Bitbucket, Jenkins, Postman.\n\nIntern: Java ecosystem chala fast ga change avutundi. Prati release ni manually chase cheyyala?\n\nSenior: Ledu. Maa team official Java/Spring release notes, security notices and platform-team updates ni filter chestundi. Ee mail lo Java 8 baseline ki compatible approved Spring Boot patch review cheyyamani vachindi.",
+      "data": {"id": "platform-2020-17"}
+    },
+    {
+      "app": "jira",
+      "action": "openIssue",
+      "label": "02 Turn learning into a controlled work item",
+      "text": "Senior: Update chusina ventane pom.xml marchamu. First project impact ni Jira task ga track chestham. Ikkada goal clear ga undi: dependency impact check, regression test, QA deploy, API verification. Continuous learning ante production lo random experimentation kaadu.",
+      "data": {"key": "MAP-2317"}
+    },
+    {
+      "app": "intellij_idea",
+      "action": "highlightTarget",
+      "label": "03 Check the current project baseline",
+      "text": "Intern: First em check chestham?\n\nSenior: Project currently ye supported version meeda undo chustham. Ee service Java 8 meeda undi and Spring Boot 2.2.8.RELEASE use chestundi. New version useful ani matrame upgrade cheyyakudadhu; existing baseline and compatibility first.",
+      "data": {"target": {"type": "line", "file": "pom.xml", "line": 6}}
+    },
+    {
+      "app": "intellij_idea",
+      "action": "showMavenDependencyTree",
+      "label": "04 Understand dependency impact before changing",
+      "text": "Senior: Framework patch ante oka line change laga kanipinchachu, kani transitive dependencies kuda move avuthayi. Maven dependency tree chusi web, JPA, Hibernate and PostgreSQL stack meeda impact enti ani check chestham.",
+      "data": {
+        "project": "com.ats:aerial-workflow",
+        "tree": "spring-boot-starter-web\nspring-boot-starter-data-jpa\n  hibernate-core\npostgresql\njunit"
+      }
+    },
+    {
+      "app": "intellij_idea",
+      "action": "typeCode",
+      "label": "05 Apply only the approved patch",
+      "text": "Senior: Compatibility clear ayyaka maintenance branch lo approved patch matrame apply chestham. New framework trend vachindi ani unrelated libraries anni upgrade cheyyamu.",
+      "data": {
+        "file": "pom.xml",
+        "marker": "2.2.8.RELEASE",
+        "code": "2.2.9.RELEASE",
+        "position": "replace",
+        "boundary": true
+      }
+    },
+    {
+      "app": "intellij_idea",
+      "action": "runJUnit",
+      "label": "06 Prove the existing GIS workflow still works",
+      "text": "Intern: Version update compile ayithe saripothunda?\n\nSenior: Saripodu. Existing survey/job workflow regress avvakunda JUnit suite run chestham. Ecosystem changes ni learn cheyyadam lo testing part compulsory, especially long-lived enterprise application lo.",
+      "data": {
+        "total": 112,
+        "passed": 112,
+        "failed": 0,
+        "tests": [
+          {"name": "SurveyWorkflowRegressionTest.completedJobRemainsReadableAfterFrameworkPatch", "status": "PASS"},
+          {"name": "JobStatusServiceTest.rejectsInvalidTransitions", "status": "PASS"},
+          {"name": "SurveyRepositoryTest.loadsSpatialProjectData", "status": "PASS"}
+        ]
+      }
+    },
+    {
+      "app": "bitbucket",
+      "action": "createPR",
+      "label": "07 Use code review to share ecosystem knowledge",
+      "text": "Senior: Nenu nerchukunna change naa laptop lo matrame undakudadhu. PR lo why we are upgrading, dependency impact, Java 8 compatibility and regression evidence explain chestham. Review discussion kuda ecosystem knowledge share cheyyadaniki important source.",
+      "data": {
+        "pr": {
+          "id": "2317",
+          "title": "Apply approved Spring Boot patch",
+          "source": "maintenance/MAP-2317-spring-patch",
+          "destination": "develop",
+          "status": "OPEN",
+          "author": "Java Developer",
+          "description": "Move Spring Boot parent from 2.2.8.RELEASE to approved 2.2.9.RELEASE. Java 8 baseline retained. Maven dependency impact reviewed and 112 regression tests pass."
+        },
+        "boundary": true
+      }
+    },
+    {
+      "app": "jenkins",
+      "action": "showConsole",
+      "label": "08 Let CI validate the change outside the IDE",
+      "text": "Senior: Local test pass aina Jenkins clean environment lo build cheyyali. Ila CI failures, plugin/dependency incompatibilities early ga kanipisthayi. Continuous evolution ni safe ga adopt cheyyadaniki automated pipeline chala important.",
+      "data": {
+        "job": "aerial-workflow",
+        "number": 291,
+        "text": "[INFO] Java: 1.8\n[INFO] Spring Boot parent: 2.2.9.RELEASE\n[INFO] Tests run: 112, Failures: 0, Errors: 0\n[INFO] Building aerial-workflow.jar\n[INFO] Deploy QA: SUCCESS\n[INFO] BUILD SUCCESS"
+      }
+    },
+    {
+      "app": "postman",
+      "action": "sendRequest",
+      "label": "09 Verify the real API after the ecosystem update",
+      "text": "Senior: Framework upgrade successful ani BUILD SUCCESS matrame cheppadu. QA lo actual aerial-processing API ni Postman tho retest chestham. Business response same ga undali. App behavior stable unte patch adoption complete ani consider chestham.",
+      "data": {
+        "status": 200,
+        "statusText": "OK",
+        "time": 137,
+        "size": "126 B",
+        "body": {"jobId": 782, "projectId": "AERIAL-HYD-2020-042", "status": "COMPLETED", "qaStatus": "READY"}
+      }
+    },
+    {
+      "app": "jira",
+      "action": "addComment",
+      "label": "10 Interview-ready answer",
+      "text": "Interview Answer: I do not try to adopt every Java release immediately. I keep up through official Java and Spring release notes, Maven dependency information, security/build alerts, team discussions and code reviews. In our aerial-mapping Spring Boot project, when an approved framework patch was available, I checked dependency impact and Java 8 compatibility, upgraded it on a branch, ran regression tests, sent it through Bitbucket review, let Jenkins build and deploy it to QA, and retested the API with Postman. That keeps me current without introducing unnecessary production risk.\n\nFollow-up: Do you always use latest? No. I prefer supported, project-approved versions.\nHow do you learn a new feature? Official docs first, then a small spike/branch, then project use only if it gives real value.",
+      "data": {
+        "key": "MAP-2317",
+        "text": "Patch review completed. Dependency impact checked, Java 8 compatibility retained, 112 regression tests passed, Jenkins QA deployment succeeded, and job API regression was verified through Postman."
+      }
+    }
+  ]
+};
