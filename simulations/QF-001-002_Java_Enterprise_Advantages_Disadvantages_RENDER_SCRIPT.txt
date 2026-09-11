@@ -3,7 +3,7 @@ const simulationPackage = {
     "familyId": "QF-001-002",
     "studySeq": 1,
     "masterSeq": 1,
-    "title": "Advantages and Disadvantages of Java for Enterprise Development",
+    "title": "Java for Enterprise Development: Real GIS Project Trade-offs",
     "project": "Geospatial Survey Data Management System",
     "year": 2018,
     "role": "Junior Java Developer",
@@ -14,10 +14,10 @@ const simulationPackage = {
   },
   "apps": {
     "jira": {
-      "siteName": "ATS Engineering",
-      "project": {"key": "TRAIN", "name": "Java Interview Training"},
+      "siteName": "Aerial Topographic Services",
+      "project": {"key": "GIS", "name": "Geospatial Survey Data Management System"},
       "user": "Java Developer",
-      "boardName": "Intern Training",
+      "boardName": "GIS Delivery",
       "activeView": "board",
       "columns": [
         {"id": "todo", "name": "TO DO"},
@@ -26,15 +26,15 @@ const simulationPackage = {
       ],
       "issues": [
         {
-          "key": "TRAIN-001",
-          "type": "Task",
-          "summary": "Explain Java enterprise advantages and disadvantages",
-          "description": "Use the Geospatial Survey Data Management System to explain why Java works well for enterprise systems and where its trade-offs appear.",
+          "key": "GIS-1264",
+          "type": "Story",
+          "summary": "Add validation summary to survey project delivery API",
+          "description": "QA needs one API response showing total survey records, valid records and delivery status before a project is released to mapping QA.",
           "status": "progress",
           "assignee": "Java Developer",
-          "reporter": "Training Lead",
+          "reporter": "QA Team",
           "priority": "Medium",
-          "labels": ["java", "enterprise", "intern-training"],
+          "labels": ["survey", "delivery", "api"],
           "comments": [],
           "attachments": []
         }
@@ -42,14 +42,18 @@ const simulationPackage = {
     },
     "intellij_idea": {
       "project": {
-        "name": "Geospatial Survey Data Management System",
+        "name": "geospatial-survey-data",
         "sdk": "Java 8",
         "languageLevel": "8"
       },
       "files": {
-        "src/main/java/com/ats/geospatial/service/SurveyService.java": {
+        "src/main/java/com/ats/geospatial/service/SurveyDeliveryService.java": {
           "language": "java",
-          "content": "package com.ats.geospatial.service;\n\nimport org.springframework.stereotype.Service;\n\n@Service\npublic class SurveyService {\n    private final SurveyRepository repository;\n\n    public SurveyRecord saveSurvey(SurveyRecord record) {\n        validate(record);\n        return repository.save(record);\n    }\n}\n"
+          "content": "package com.ats.geospatial.service;\n\nimport org.springframework.stereotype.Service;\n\n@Service\npublic class SurveyDeliveryService {\n    private final SurveyRepository repository;\n\n    public DeliverySummary buildSummary(Long projectId) {\n        SurveyStats stats = repository.loadStats(projectId);\n        return new DeliverySummary(\n                stats.getTotalRecords(),\n                stats.getValidRecords(),\n                stats.getDeliveryStatus());\n    }\n}\n"
+        },
+        "src/test/java/com/ats/geospatial/service/SurveyDeliveryServiceTest.java": {
+          "language": "java",
+          "content": "package com.ats.geospatial.service;\n\nimport org.junit.Test;\n\npublic class SurveyDeliveryServiceTest {\n    @Test\n    public void shouldBuildProjectDeliverySummary() {\n        // repository mocked with project 105 survey counts\n    }\n}\n"
         },
         "pom.xml": {
           "language": "xml",
@@ -63,13 +67,14 @@ const simulationPackage = {
           "type": "folder",
           "open": true,
           "children": [
-            {"name": "SurveyService.java", "path": "src/main/java/com/ats/geospatial/service/SurveyService.java", "type": "file", "language": "java"},
+            {"name": "SurveyDeliveryService.java", "path": "src/main/java/com/ats/geospatial/service/SurveyDeliveryService.java", "type": "file", "language": "java"},
+            {"name": "SurveyDeliveryServiceTest.java", "path": "src/test/java/com/ats/geospatial/service/SurveyDeliveryServiceTest.java", "type": "file", "language": "java"},
             {"name": "pom.xml", "path": "pom.xml", "type": "file", "language": "xml"}
           ]
         }
       ],
-      "initialFile": "src/main/java/com/ats/geospatial/service/SurveyService.java",
-      "console": "Project loaded. Java 8 SDK configured.",
+      "initialFile": "src/main/java/com/ats/geospatial/service/SurveyDeliveryService.java",
+      "console": "Project loaded with Java 8 SDK.",
       "maven": {
         "project": "geospatial-survey-data",
         "profile": "dev",
@@ -82,10 +87,10 @@ const simulationPackage = {
         ]
       },
       "spring": {
-        "beans": ["surveyController", "surveyService", "surveyRepository"],
-        "mappings": ["POST /api/surveys", "GET /api/surveys/{id}"]
+        "beans": ["surveyDeliveryController", "surveyDeliveryService", "surveyRepository"],
+        "mappings": ["GET /api/projects/{id}/delivery-summary"]
       },
-      "git": {"branch": "develop", "changes": []},
+      "git": {"branch": "feature/GIS-1264-delivery-summary", "changes": []},
       "terminal": "C:\\workspace\\geospatial-survey-data>"
     },
     "postman": {
@@ -94,13 +99,13 @@ const simulationPackage = {
       "environments": {"QA": {"baseUrl": "https://qa-gis.ats.local"}},
       "collections": [
         {
-          "name": "Survey API",
+          "name": "Survey Delivery API",
           "requests": [
             {
-              "id": "getSurvey",
-              "name": "Get Survey",
+              "id": "deliverySummary",
+              "name": "Project Delivery Summary",
               "method": "GET",
-              "url": "{{baseUrl}}/api/surveys/4102",
+              "url": "{{baseUrl}}/api/projects/105/delivery-summary",
               "headers": {"Accept": "application/json"},
               "bodyMode": "raw",
               "body": "",
@@ -110,17 +115,51 @@ const simulationPackage = {
           "folders": []
         }
       ],
-      "initialRequest": "getSurvey",
+      "initialRequest": "deliverySummary",
       "history": [],
       "console": [{"text": "Postman Console ready"}]
     },
     "pgadmin": {
-      "title": "geospatial - PostgreSQL",
+      "title": "geospatial",
       "database": "geospatial",
       "connection": "QA PostgreSQL / geospatial",
       "user": "app_reader",
-      "tree": [],
-      "queryTabs": [],
+      "tree": [
+        {
+          "name": "Servers",
+          "type": "folder",
+          "path": "servers",
+          "open": true,
+          "children": [
+            {
+              "name": "QA PostgreSQL",
+              "type": "server",
+              "path": "servers/qa",
+              "open": true,
+              "children": [
+                {
+                  "name": "geospatial",
+                  "type": "database",
+                  "path": "servers/qa/geospatial",
+                  "open": true,
+                  "children": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "initialSelection": "servers/qa/geospatial",
+      "queryTabs": [
+        {
+          "id": "delivery-check",
+          "title": "GIS-1264 delivery check",
+          "sql": "SELECT project_id, total_records, valid_records, delivery_status\nFROM survey_project_summary\nWHERE project_id = 105;",
+          "mode": "query",
+          "dirty": false
+        }
+      ],
+      "initialQuery": "delivery-check",
       "autoCommit": true
     },
     "jenkins": {
@@ -128,15 +167,15 @@ const simulationPackage = {
       "user": "Java Developer",
       "activeView": "dashboard",
       "activeJob": "geospatial-survey-data",
-      "activeBuild": 118,
+      "activeBuild": 243,
       "jobs": [
         {
           "name": "geospatial-survey-data",
-          "description": "Build, test, package and deploy the Spring Boot service.",
+          "description": "Build, test and deploy the GIS Spring Boot service.",
           "status": "success",
-          "lastSuccess": "#118",
-          "lastFailure": "#113",
-          "duration": "2m 41s",
+          "lastSuccess": "#243",
+          "lastFailure": "#237",
+          "duration": "2m 58s",
           "pipeline": [
             {"name": "Checkout", "status": "success"},
             {"name": "Test", "status": "success"},
@@ -145,13 +184,13 @@ const simulationPackage = {
           ],
           "builds": [
             {
-              "number": 118,
+              "number": 243,
               "status": "success",
               "time": "Today",
-              "duration": "2m 41s",
+              "duration": "2m 58s",
               "progress": 100,
-              "cause": "Training example",
-              "console": "[INFO] Tests passed\n[INFO] JAR packaged\n[INFO] Deploy QA: SUCCESS\n[INFO] BUILD SUCCESS",
+              "cause": "feature/GIS-1264-delivery-summary",
+              "console": "",
               "stages": [
                 {"name": "Checkout", "status": "success"},
                 {"name": "Test", "status": "success"},
@@ -159,7 +198,7 @@ const simulationPackage = {
                 {"name": "Deploy QA", "status": "success"}
               ],
               "artifacts": [],
-              "testResults": {"total": 74, "passed": 74, "failed": 0, "tests": []}
+              "testResults": {"total": 86, "passed": 86, "failed": 0, "tests": []}
             }
           ],
           "config": {}
@@ -187,72 +226,113 @@ const simulationPackage = {
     {
       "app": "jira",
       "action": "openIssue",
-      "label": "01 Start with the enterprise question",
-      "text": "Softwares involved: IntelliJ IDEA, Java 8, Spring Boot, Maven, Postman, PostgreSQL/pgAdmin, Jenkins, Linux, Jira.\n\nJava Expert: Java enterprise strengths and weaknesses make more sense when we connect them to our GIS backend instead of memorizing a generic list.",
-      "data": {"key": "TRAIN-001"}
+      "label": "01 Real task, not theory",
+      "text": "Softwares involved: Jira, IntelliJ IDEA, Maven/JUnit, Postman, pgAdmin/PostgreSQL, Jenkins, Linux.\n\nQA asked me to add a delivery-summary response before an aerial survey project went to mapping QA. It was a small API change, but it touched code, tests, database verification and deployment. That work is where Java's enterprise strengths and drawbacks were visible.",
+      "data": {"key": "GIS-1264"}
     },
     {
       "app": "intellij_idea",
       "action": "highlightTarget",
-      "label": "02 Advantage: maintainable typed backend",
-      "text": "Java Expert: Static typing, OOP, mature IDE refactoring and clear service boundaries make large long-lived codebases easier for teams to maintain. The Spring service layer is one example.",
-      "data": {"target": {"type": "line", "file": "src/main/java/com/ats/geospatial/service/SurveyService.java", "line": 5}}
+      "label": "02 Advantage seen in the codebase",
+      "text": "Intern: Where did Java actually help?\n\nSenior: This service was already split into clear controller/service/repository layers. I could change one typed service method and IntelliJ showed usages and type mistakes immediately. On a shared long-lived GIS backend, that safety is more valuable than saving a few lines of code.",
+      "data": {"target": {"type": "line", "file": "src/main/java/com/ats/geospatial/service/SurveyDeliveryService.java", "line": 9}}
     },
     {
       "app": "intellij_idea",
-      "action": "showMavenDependencies",
-      "label": "03 Advantage: mature ecosystem",
-      "text": "Intern: Why is Java common in enterprise projects? Java Expert: Spring Boot, JPA, database drivers, testing libraries and decades of JVM tooling give teams a mature ecosystem instead of building infrastructure from scratch.",
-      "data": {"dependencies": ["spring-boot-starter-web", "spring-boot-starter-data-jpa", "postgresql", "junit"]}
-    },
-    {
-      "app": "intellij_idea",
-      "action": "runMavenGoal",
-      "label": "04 Advantage: build and test discipline",
-      "text": "Java Expert: Maven plus JUnit gives repeatable builds and regression testing, which matters when multiple developers maintain a business-critical GIS application.",
-      "data": {"goal": "clean test", "status": "BUILD SUCCESS"}
+      "action": "runJUnit",
+      "label": "03 Advantage seen before the PR",
+      "text": "Before I sent the change for review, I ran the existing regression suite plus the new delivery-summary test. This is another practical Java advantage: JUnit and Maven make it normal to verify a change against the rest of a large application instead of testing only the new line.",
+      "data": {
+        "total": 86,
+        "passed": 86,
+        "failed": 0,
+        "tests": [
+          {"name": "SurveyDeliveryServiceTest.shouldBuildProjectDeliverySummary", "status": "PASS"},
+          {"name": "CoordinateValidatorTest.boundariesRemainValid", "status": "PASS"},
+          {"name": "SurveyRepositoryTest.loadsProjectStats", "status": "PASS"}
+        ]
+      }
     },
     {
       "app": "postman",
-      "action": "showResponse",
-      "label": "05 Advantage: strong server/API fit",
-      "text": "Java Expert: Spring Boot is productive for REST APIs, validation, security, transactions and integrations. The same JVM application can expose stable APIs to GIS and reporting clients.",
-      "data": {"status": "200 OK", "time": "146 ms", "body": "{\"surveyId\":4102,\"status\":\"VALIDATED\",\"projectId\":105}"}
+      "action": "sendRequest",
+      "label": "04 Advantage seen at the REST boundary",
+      "text": "I called the QA endpoint exactly the way the mapping/reporting client would use it. Spring Boot made the HTTP, validation and JSON side routine, so most of my attention stayed on the survey business rule instead of low-level server plumbing.",
+      "data": {
+        "status": 200,
+        "statusText": "OK",
+        "time": 143,
+        "size": "148 B",
+        "body": {
+          "projectId": 105,
+          "totalRecords": 12480,
+          "validRecords": 12196,
+          "deliveryStatus": "READY_FOR_QA"
+        }
+      }
     },
     {
       "app": "pgadmin",
       "action": "executeQuery",
-      "label": "06 Advantage: enterprise persistence",
-      "text": "Java Expert: Java integrates well with relational databases and transaction-heavy workflows through JDBC/JPA/Hibernate. In our project that meant reliable PostgreSQL/PostGIS persistence.",
-      "data": {"columns": ["survey_id", "status", "project_id"], "rows": [[4102, "VALIDATED", 105]]}
+      "label": "05 Advantage seen in database work",
+      "text": "I did not trust the API response alone. I checked the same project in PostgreSQL. JPA/Hibernate plus PostgreSQL/PostGIS was a strong fit for our transactional GIS workflow, while SQL still gave us a direct way to prove what was stored.",
+      "data": {
+        "columns": ["project_id", "total_records", "valid_records", "delivery_status"],
+        "rows": [[105, 12480, 12196, "READY_FOR_QA"]],
+        "executionTime": "0.041 s",
+        "statusText": "Query complete"
+      }
     },
     {
       "app": "jenkins",
       "action": "showConsole",
-      "label": "07 Advantage: deployment ecosystem",
-      "text": "Java Expert: Enterprise teams also benefit from predictable CI/CD. Jenkins can build, test, package one JAR and deploy the same artifact through controlled environments.",
-      "data": {"job": "geospatial-survey-data", "number": 118, "text": "[INFO] Tests passed\n[INFO] JAR packaged\n[INFO] Deploy QA: SUCCESS\n[INFO] BUILD SUCCESS"}
+      "label": "06 Advantage seen in release work",
+      "text": "The same Maven project went through Jenkins: checkout, tests, package, then QA deployment. We were not copying a developer's random local build. A repeatable JAR and mature CI tooling are a big reason Java works well for enterprise teams.",
+      "data": {
+        "job": "geospatial-survey-data",
+        "number": 243,
+        "text": "[INFO] Checkout feature/GIS-1264-delivery-summary\n[INFO] Tests run: 86, Failures: 0, Errors: 0\n[INFO] Building jar: geospatial-survey-data-1.8.4.jar\n[INFO] Deploy QA: SUCCESS\n[INFO] BUILD SUCCESS"
+      }
     },
     {
       "app": "linux",
       "action": "runCommand",
-      "label": "08 Disadvantage: JVM resource and runtime complexity",
-      "text": "Intern: What are the drawbacks? Java Expert: JVM applications can use more memory and have slower startup than lighter runtimes. Teams may also need to understand heap, GC, threads and JVM tuning when production load grows.",
-      "data": {"command": "java -version && ps -o pid,rss,cmd -C java", "output": "java version \"1.8.0_202\"\nPID   RSS     CMD\n1842  612480  java -jar geospatial-survey-data.jar", "boundary": true}
+      "label": "07 Disadvantage seen after deployment",
+      "text": "Intern: What was the downside in real work?\n\nSenior: The QA service was not lightweight. A Spring/JPA JVM process used hundreds of MB and startup took several seconds. That was acceptable for this backend, but it meant memory, heap, GC and startup behavior were operational concerns we had to understand.",
+      "data": {
+        "command": "ps -o pid,rss,etime,cmd -C java",
+        "output": "PID   RSS     ELAPSED   CMD\n1842  618240  02:17:43  java -jar geospatial-survey-data-1.8.4.jar",
+        "boundary": true
+      }
     },
     {
       "app": "intellij_idea",
       "action": "showMavenDependencyTree",
-      "label": "09 Disadvantage: dependency and framework complexity",
-      "text": "Java Expert: Large enterprise stacks can become verbose and dependency-heavy. Spring/JPA are powerful, but upgrades, transitive dependencies, configuration and compatibility need discipline. Java is not automatically the best choice for every tiny or low-memory service.",
-      "data": {"tree": "com.ats:geospatial-survey-data:jar:1.0\n+- spring-boot-starter-web\n+- spring-boot-starter-data-jpa\n+- hibernate-core\n+- postgresql\n\\- junit"}
+      "label": "08 Disadvantage seen during upgrades",
+      "text": "Another real cost was dependency management. Spring Boot saved huge amounts of development time, but the application also had web, JPA, Hibernate, PostgreSQL and testing dependencies. During patch upgrades we had to check transitive versions and compatibility instead of changing one JAR blindly.",
+      "data": {
+        "project": "com.ats:geospatial-survey-data:1.8.4",
+        "tree": "spring-boot-starter-web\nspring-boot-starter-data-jpa\n  hibernate-core\npostgresql\njunit"
+      }
+    },
+    {
+      "app": "intellij_idea",
+      "action": "highlightTarget",
+      "label": "09 Disadvantage for very small changes",
+      "text": "For a tiny script this stack would be overkill. Even this small GIS enhancement lived inside service, repository, tests, Maven configuration and a deployment pipeline. That structure pays off in a large maintained system, but it can feel verbose and heavy for a very small utility.",
+      "data": {"target": {"type": "line", "file": "pom.xml", "line": 4}}
     },
     {
       "app": "jira",
       "action": "addComment",
       "label": "10 Interview-ready answer",
-      "text": "Interview Answer: Java is strong for enterprise development because it is platform-independent through the JVM, statically typed, mature, well supported by frameworks such as Spring, has strong database/testing/concurrency tooling, and works well for large maintainable backend systems. In our GIS project that helped us build REST services, validation, PostgreSQL/PostGIS workflows, automated tests and repeatable Jenkins deployments. The trade-offs are higher memory/startup cost than some lighter runtimes, more verbosity, JVM/GC tuning needs, and dependency/framework complexity. So I would choose Java when maintainability, reliability and ecosystem strength matter, not simply because it is Java.\n\nFollow-up 1: Is Java always best for enterprise? No. Very small, latency-sensitive or low-memory services may justify another runtime.\n\nFollow-up 2: Biggest enterprise strength? Mature JVM ecosystem plus maintainability and tooling for long-lived systems.",
-      "data": {"key": "TRAIN-001", "text": "QF-001-002 completed: enterprise Java strengths tied to maintainability, ecosystem, persistence and CI/CD; trade-offs tied to memory/startup, JVM operations and dependency complexity."}
+      "text": "Interview Answer: In our GIS backend, Java was useful because the application was long-lived and shared by multiple developers. Static typing and IDE refactoring made changes safer, and Spring Boot, Maven, JUnit, JPA/PostgreSQL and Jenkins gave us a mature development and release ecosystem. The same packaged application could run predictably in our JVM environments. The trade-offs were a heavier memory/startup footprint, more framework and dependency maintenance, and more ceremony for small changes. So I would choose Java when maintainability, reliability and ecosystem strength matter, not automatically for every small service.\n\nFollow-up: Biggest strength? Safe maintainability plus the mature JVM/Spring ecosystem.\nBiggest drawback? Runtime/dependency complexity compared with a lightweight service or script.",
+      "data": {
+        "key": "GIS-1264",
+        "author": "Java Developer",
+        "time": "Now",
+        "text": "Verified delivery summary in Postman and PostgreSQL. Regression suite passed and Jenkins QA deployment succeeded. Interview note: Java strengths were maintainability, mature ecosystem and repeatable delivery; trade-offs were JVM footprint, dependency complexity and extra ceremony for small changes."
+      }
     }
   ]
 };
